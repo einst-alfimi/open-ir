@@ -21,3 +21,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# Prisma local db
+prisma/dev.db
