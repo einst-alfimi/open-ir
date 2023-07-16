@@ -1,3 +1,29 @@
+# Open beatoraja IR
+
+つくるの２回目
+
+## TODOs
+
+### system
+
+セッション管理
+
+### APIs
+
+ユーザ作成
+
+コース管理
+
+ライバル管理
+
+### Frontend
+
+全部
+
+-------
+
+以下Nuxt3のテンプレ
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
