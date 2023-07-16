@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String? @unique
+  name  String?
+  loginId  String
+  password String
+
+  content  String?
+  scores   Score[]
+  songAchievements SongAchievement[]
+}
+
+model Song {
+  id        Int    @id @default(autoincrement())
+  title     String
+  subtitle  String
+  genre     String
+  artist    String
+  subartist String
+  md5       String
+  sha256    String @unique
+  mode      String
+  level     Int
+  lntype    Int
+  judge     Int
+  notes     Int
+  total     Int
+  minbpm    Int
+  maxbpm    Int
+
+  url          String?
+  appendurl    String?
+  description  String?
+  hasUndefinedLN Boolean
+  hasLN          Boolean
+  hasCN          Boolean
+  hasHCN         Boolean
+  hasMine        Boolean
+  hasRandom      Boolean
+  hasStop        Boolean
+  published Boolean @default(false)
+  scores Score[]
+  songAchievements SongAchievement[]
+  difficultyTables DifficultyTableOnSong[]
+}
+
+model SongAchievement {
+  id       Int     @id @default(autoincrement())
+  @@unique([songId, authorId, option], name: "unique_identifier")
+
+  song     Song    @relation(fields: [songId], references: [id])
+  songId   Int
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId Int
+  option   Int
+
+  bestClear   Score?    @relation("ClearAchievements", fields: [bestClearId], references: [id])
+  bestClearId Int?      @unique
+  bestScore   Score?    @relation("ScoreAchievements", fields: [bestScoreId], references: [id])
+  bestScoreId Int?      @unique
+
+  bestExscore Int
+}
+
+model OrajaVersion {
+  id           Int    @id @default(autoincrement())
+  name         String
+  versionHash  String  @unique
+  scores       Score[]
+}
+
+model ApiVersion {
+  id           Int    @id @default(autoincrement())
+  name         String
+  versionHash  String  @unique
+}
+
+model Score {
+  id             Int    @id @default(autoincrement())
+  clear          Int
+  lntype         Int
+  epg            Int
+  lpg            Int
+  egr            Int
+  lgr            Int
+  egd            Int
+  lgd            Int
+  ebd            Int
+  lbd            Int
+  epr            Int
+  lpr            Int
+  ems            Int
+  lms            Int
+  exscore        Int
+  maxcombo       Int
+  notes          Int
+  passnotes      Int
+  minbp          Int
+  option         Int
+  assist         Int
+  gauge          Int
+  deviceType     String
+  judgeAlgorithm String
+  rule           String
+  ghost          String? // 現在Ghostを送る機構がないため本体側も修正必須
+
+  clearAchievement  SongAchievement? @relation("ClearAchievements")
+  scoreAchievement  SongAchievement? @relation("ScoreAchievements")
+
+  content   String?
+  author          User    @relation(fields: [authorId], references: [id])
+  authorId        Int
+  orajaVersion    OrajaVersion    @relation(fields: [orajaVersionId], references: [id])
+  orajaVersionId  Int
+  song            Song    @relation(fields: [songId], references: [id])
+  songId          Int
+}
+
+model DifficultyTable {
+  id        Int    @id @default(autoincrement())
+  title     String
+  content   String?
+  url       String?
+  songs     DifficultyTableOnSong[]
+}
+
+model DifficultyTableOnSong {
+  difficultyTable    DifficultyTable  @relation(fields: [difficultyTableId], references: [id])
+  difficultyTableId  Int
+  song     Song    @relation(fields: [songId], references: [id])
+  songId   Int
+  @@id([difficultyTableId, songId])
+}
