@@ -20,6 +20,22 @@
 
 全部
 
+
+## テスト実施方法
+
+1. DockerでMySQLコンテナを立てる
+
+`$ docker-compose up -d`
+
+2. `.env`に接続情報を記載する
+
+デフォルトだと以下  
+`DATABASE_URL=mysql://prisma:password@localhost:3306/prisma`
+
+3. テスト実施
+
+`$ npm run test`
+
 -------
 
 以下Nuxt3のテンプレ
