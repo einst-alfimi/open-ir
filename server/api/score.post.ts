@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { Score } from "@prisma/client";
 
-const convertClearType = (clearstr: String) => {
+const convertClearType = (clearstr: string) => {
   switch(clearstr) {
     case 'NoPlay': return 0; 
     case 'Failed': return 1;
@@ -17,7 +17,7 @@ const convertClearType = (clearstr: String) => {
   }
 };
 
-const calcExscore = (score: any) => {
+const calcExscore = (score: Score) => {
   return (score.lpg + score.epg) * 2 + score.lgr + score.lgr
 }
 export default defineEventHandler(async (event) => {

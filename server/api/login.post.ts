@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   console.log(body);
-  const prisma = db.getInstance();
+  // const prisma = db.getInstance();
 
   return {
     "id": "id dog",
