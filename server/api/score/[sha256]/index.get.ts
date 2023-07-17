@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   console.log(event.context)
   const query = await getQuery(event);
   console.log(query)
-  const prisma = db.getInstance();
+  // const prisma = db.getInstance();
 
 
   return [// dummydata
