@@ -33,16 +33,21 @@ export default defineEventHandler(async (event) => {
   const song = body.model;
   delete song.values; // これなにはいってるのかわからん
   const prisma = db.getInstance();
-  const dummyUser = {
-    name: 'dummy user1'
-  }
-  const loginUser = await prisma.user.upsert({
+
+  const loginUser = await prisma.userSession.findFirst({
     where: {
-      id: 1,
+      token: header.accessToken,
+      expiredAt:  {
+        gte: new Date(),
+      },
     },
-    update: dummyUser,
-    create: dummyUser,
   })
+
+  if (!loginUser) {
+    console.log("not logged in")
+    return;
+  }
+
   // get Version
   const dummyVersion = {
       name: 'dummy user1',

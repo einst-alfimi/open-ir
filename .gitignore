@@ -24,3 +24,5 @@ logs
 
 # Prisma local db
 prisma/dev.db
+
+.devcontainer

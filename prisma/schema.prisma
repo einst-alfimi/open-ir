@@ -6,15 +6,15 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id    Int    @id @default(autoincrement())
-  email String? @unique
+  email String?   @unique
   name  String?
-  loginId  String
+  loginId  String @unique
   password String
 
   content  String?
@@ -126,6 +126,8 @@ model Score {
   orajaVersionId  Int
   song            Song    @relation(fields: [songId], references: [id])
   songId          Int
+
+  createdAt DateTime @default(now())
 }
 
 model DifficultyTable {
@@ -142,4 +144,12 @@ model DifficultyTableOnSong {
   song     Song    @relation(fields: [songId], references: [id])
   songId   Int
   @@id([difficultyTableId, songId])
+}
+
+// temp setting..
+model UserSession {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  token     String
+  expiredAt DateTime
 }
