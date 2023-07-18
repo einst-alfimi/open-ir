@@ -29,21 +29,13 @@ export default defineEventHandler(async (event) => {
     jarToken: getRequestHeader(event, 'jarToken'),
     accessToken: getRequestHeader(event, 'accessToken'),
   }
-  console.log(header)
   const song = body.model;
   delete song.values; // これなにはいってるのかわからん
   const prisma = db.getInstance();
 
-  const loginUser = await prisma.userSession.findFirst({
-    where: {
-      token: header.accessToken,
-      expiredAt:  {
-        gte: new Date(),
-      },
-    },
-  })
+  const userSession = await getUserSession(header.accessToken);
 
-  if (!loginUser) {
+  if (!userSession) {
     console.log("not logged in")
     return;
   }
@@ -78,7 +70,7 @@ export default defineEventHandler(async (event) => {
   delete score.player;
   delete score.date;
   // set relations
-  score.author = {connect : {id: loginUser.id}}
+  score.author = {connect : {id: userSession.userId}}
   score.song = {connect : {id: upsertSong.id}}
   score.orajaVersion = {connect : {id: playVersion.id}}
   score.clear = convertClearType(score.clear)
@@ -89,7 +81,7 @@ export default defineEventHandler(async (event) => {
   // set achievement
   const currentAchievement = await prisma.songAchievement.findFirst({
     where: {
-      authorId: loginUser.id,
+      authorId: userSession.userId,
       songId: upsertSong.id,
       option: score.option,
     },
@@ -128,7 +120,7 @@ export default defineEventHandler(async (event) => {
     // NewScore
     await prisma.songAchievement.create({
       data: {
-        authorId: loginUser.id,
+        authorId: userSession.userId,
         songId: upsertSong.id,
         option: score.option,
         bestClearId: updateScore.id,
